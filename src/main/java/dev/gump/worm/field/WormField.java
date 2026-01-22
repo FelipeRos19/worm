@@ -103,16 +103,29 @@ public class WormField {
     public String getSqlCreation(){
         if(type == FieldType.ENTITY && fieldClass_relational != null){
             EntityMeta cMeta = Worm.getRegistry().getTableMeta(fieldClass_relational);
-            if(cMeta.getUniqueKeyColumns().size() != 1)
+            if (cMeta.getUniqueKeyColumns().size() != 1)
                 throw new WormException("Relational Worm tables need to have only one unique keys");
+
             WormField key = cMeta.getUniqueKeyColumns().toArray(WormField[]::new)[0];
-            StringBuilder sql = new StringBuilder(key.getSqlCreation());
-            sql.append(", CONSTRAINT FK_").append(getName()).append("_").append(cMeta.getName()).append(" FOREIGN KEY (").append(getName()).append(") REFERENCES ")
+
+            StringBuilder sql = new StringBuilder();
+            sql.append(key.getType().getValue());
+            if (key.getLength() > 0)
+                sql.append('(').append(key.getLength()).append(')');
+
+            if (!nullable)
+                sql.append(" NOT NULL");
+
+            sql.append(", CONSTRAINT FK_").append(getName()).append("_").append(cMeta.getName())
+                    .append(" FOREIGN KEY (").append(getName()).append(") REFERENCES ")
                     .append(cMeta.getName()).append(" (").append(key.getName()).append(")");
-            if(onDelete != null)
-                sql.append(" ON DELETE ").append(onDelete.getValue());
-            if(onUpdate != null)
-                sql.append(" ON UPDATE ").append(onUpdate.getValue());
+
+            if (onDelete != null)
+                sql.append(" ON DELETE ").append(onDelete.name());
+
+            if (onUpdate != null)
+                sql.append(" ON UPDATE ").append(onUpdate.name());
+
             return sql.toString();
         }
 

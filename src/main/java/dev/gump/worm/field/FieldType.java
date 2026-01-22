@@ -2,6 +2,7 @@ package dev.gump.worm.field;
 
 import dev.gump.worm.entity.Entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -21,7 +22,8 @@ public enum FieldType {
     TIME("TIME", List.of(), true),
     TIMESTAMP("TIMESTAMP", List.of(), true),
     BOOL("BOOL", List.of(Boolean.class)),
-    ENTITY("ENTITY",List.of(Entity.class), true);
+    ENTITY("ENTITY",List.of(Entity.class), true),
+    DECIMAL("DECIMAL(19,2)", List.of(BigDecimal.class), true);
     private final String value;
     private final List<Class<?>> classes;
     private final boolean needAsps;
